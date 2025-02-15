@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "cd sushi-ui && npm run build"
   publish = "build"
 
 [[redirects]]
