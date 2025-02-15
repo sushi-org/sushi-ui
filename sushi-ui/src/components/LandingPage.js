@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Define theme colors
 const theme = {
-  primaryColor: '#6A1B9B',    // DeepSeek purple
+  primaryColor: '#9464e8',    // Updated primary color
   secondaryColor: '#FFFFFF',   // White
   backgroundColor: '#F5F5F5',  // Light gray
 };
@@ -65,17 +65,35 @@ const LandingPage = () => {
             pl: { xs: 1, md: 4 },  // Added left padding, more on larger screens
             pr: { xs: 1, md: 4 },  // Added right padding, more on larger screens
           }}>
-            {/* Logo */}
-            <Typography 
-              variant="h6" 
+            <Box 
               sx={{ 
-                color: theme.primaryColor, 
-                fontWeight: 'bold',
-                marginRight: 'auto',  // Pushes logo to the left
+                display: 'flex', 
+                alignItems: 'center',
+                gap: 2,
+                marginRight: 'auto',
               }}
             >
-              FigSprout
-            </Typography>
+              <Box
+                component="img"
+                src="/fig.png"
+                alt="FigSprout Logo"
+                sx={{
+                  width: 32,
+                  height: 32,
+                  objectFit: 'contain',
+                }}
+              />
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  color: theme.primaryColor,
+                  fontWeight: 'bold',
+                  marginRight: 'auto',
+                }}
+              >
+                FigSprout
+              </Typography>
+            </Box>
 
             {/* Navigation Items - Added margin to create space between nav and login */}
             <Box sx={{ 
@@ -262,7 +280,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #6A1B9B 0%, #9C27B0 100%)',
+          background: 'linear-gradient(135deg, #9464e8 0%, #9C27B0 100%)',
           position: 'relative',
           height: '40vh',  // Increased from 30vh to 40vh
           overflow: 'hidden',
@@ -336,8 +354,8 @@ const LandingPage = () => {
               size="medium"
               onClick={() => login()}
               sx={{
-                backgroundColor: 'white',
-                color: theme.primaryColor,
+                backgroundColor: '#9464e8',
+                color: 'white',
                 px: 4,
                 py: 1,
                 fontSize: '1rem',

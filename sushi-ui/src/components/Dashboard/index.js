@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 
@@ -11,16 +11,6 @@ import Audience from './pages/Audience';
 import Integrations from './pages/Integrations';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Redirect to campaign section by default
-  useEffect(() => {
-    if (location.pathname === '/dashboard') {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [location, navigate]);
-
   const user = {
     name: 'John Doe',
     email: 'john@example.com',
@@ -43,6 +33,7 @@ const Dashboard = () => {
           <Route path="/content" element={<Content />} />
           <Route path="/audience" element={<Audience />} />
           <Route path="/integrations" element={<Integrations />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Box>
     </Box>

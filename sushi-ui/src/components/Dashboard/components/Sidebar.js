@@ -30,6 +30,19 @@ const Sidebar = ({ drawerWidth = 280 }) => {
     { path: '/dashboard/integrations', icon: IntegrationsIcon, label: 'Integrations' },
   ];
 
+  const handleNavigation = (path) => {
+    if (path !== currentPath) {
+      navigate(path);
+    }
+  };
+
+  const isSelected = (path) => {
+    if (path === '/dashboard') {
+      return currentPath === path || currentPath === '/dashboard/';
+    }
+    return currentPath === path;
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -45,7 +58,26 @@ const Sidebar = ({ drawerWidth = 280 }) => {
       }}
     >
       {/* Logo */}
-      <Box sx={{ p: 3 }}>
+      <Box 
+        sx={{ 
+          p: 3, 
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+        }}
+        onClick={() => handleNavigation('/dashboard')}
+      >
+        <Box
+          component="img"
+          src="/fig.png"
+          alt="FigSprout Logo"
+          sx={{
+            width: 32,
+            height: 32,
+            objectFit: 'contain',
+          }}
+        />
         <Typography 
           variant="h6" 
           sx={{ 
@@ -54,7 +86,7 @@ const Sidebar = ({ drawerWidth = 280 }) => {
             fontSize: '1.5rem'
           }}
         >
-          AdSensei
+          FigSprout
         </Typography>
       </Box>
 
@@ -66,34 +98,42 @@ const Sidebar = ({ drawerWidth = 280 }) => {
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
 
       {/* Navigation Items */}
-      <List>
+      <List sx={{ pt: 2 }}>
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isSelected = currentPath === item.path;
+          const selected = isSelected(item.path);
           
           return (
             <ListItem 
               button 
               key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavigation(item.path)}
               sx={{
-                backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                my: 0.5,
+                mx: 1,
+                borderRadius: '8px',
+                backgroundColor: selected ? 'rgba(148, 100, 232, 0.08)' : 'transparent',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  backgroundColor: selected 
+                    ? 'rgba(148, 100, 232, 0.12)' 
+                    : 'rgba(148, 100, 232, 0.08)',
                 },
+                transition: 'all 0.2s ease',
               }}
             >
               <ListItemIcon>
                 <Icon sx={{ 
-                  color: isSelected ? '#fff' : 'rgba(255, 255, 255, 0.7)',
+                  color: selected ? '#9464e8' : 'rgba(255, 255, 255, 0.7)',
+                  transition: 'color 0.2s ease',
                 }} />
               </ListItemIcon>
               <ListItemText 
                 primary={item.label} 
                 sx={{
                   '& .MuiListItemText-primary': {
-                    color: isSelected ? '#fff' : 'rgba(255, 255, 255, 0.7)',
-                    fontWeight: isSelected ? 600 : 400,
+                    color: selected ? '#9464e8' : 'rgba(255, 255, 255, 0.7)',
+                    fontWeight: selected ? 600 : 400,
+                    transition: 'all 0.2s ease',
                   }
                 }}
               />
