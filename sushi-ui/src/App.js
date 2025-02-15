@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
@@ -22,7 +22,7 @@ function App() {
       <GoogleOAuthProvider clientId={clientId}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
         </Routes>
       </GoogleOAuthProvider>
     </Router>

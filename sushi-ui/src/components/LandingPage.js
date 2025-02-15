@@ -11,22 +11,28 @@ import {
   AppBar,
   Toolbar,
 } from '@mui/material';
-import { Analytics, AutoAwesome, ConnectWithoutContact, Campaign } from '@mui/icons-material';
+import { 
+  Analytics, 
+  AutoAwesome, 
+  ConnectWithoutContact, 
+  Campaign 
+} from '@mui/icons-material';
 import LoginButton from './LoginButton';
 import useGoogleAuth from '../hooks/useGoogleAuth';
 import { useNavigate } from 'react-router-dom';
 
+// Define theme colors
+const theme = {
+  primaryColor: '#6A1B9B',    // DeepSeek purple
+  secondaryColor: '#FFFFFF',   // White
+  backgroundColor: '#F5F5F5',  // Light gray
+};
+
 const LandingPage = () => {
   const navigate = useNavigate();
-
   const login = useGoogleAuth();
 
-  // Colors
-  const primaryColor = '#6A1B9B'; // DeepSeek purple
-  const secondaryColor = '#FFFFFF'; // White
-  const backgroundColor = '#F5F5F5'; // Light gray
-
-  // Menu states
+  // Only declare state variables that are used
   const [productAnchor, setProductAnchor] = useState(null);
   const [resourcesAnchor, setResourcesAnchor] = useState(null);
 
@@ -47,8 +53,8 @@ const LandingPage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: backgroundColor,
-        color: primaryColor,
+        backgroundColor: theme.backgroundColor,
+        color: theme.primaryColor,
       }}
     >
       {/* Navigation Header */}
@@ -63,7 +69,7 @@ const LandingPage = () => {
             <Typography 
               variant="h6" 
               sx={{ 
-                color: primaryColor, 
+                color: theme.primaryColor, 
                 fontWeight: 'bold',
                 marginRight: 'auto',  // Pushes logo to the left
               }}
@@ -97,7 +103,7 @@ const LandingPage = () => {
                     padding: '8px 16px',
                     display: 'flex',
                     alignItems: 'center',
-                    '&:hover': { color: primaryColor },
+                    '&:hover': { color: theme.primaryColor },
                     '&::after': {
                       content: '""',
                       width: '0',
@@ -152,7 +158,7 @@ const LandingPage = () => {
                         fontSize: '0.95rem',
                         transition: 'all 0.2s',
                         '&:hover': { 
-                          color: primaryColor,
+                          color: theme.primaryColor,
                           backgroundColor: 'rgba(106, 27, 155, 0.04)',
                         }
                       }}
@@ -178,7 +184,7 @@ const LandingPage = () => {
                     color: 'text.primary', 
                     cursor: 'pointer',
                     padding: '8px 16px',
-                    '&:hover': { color: primaryColor }
+                    '&:hover': { color: theme.primaryColor }
                   }}
                 >
                   Resources
@@ -214,7 +220,7 @@ const LandingPage = () => {
                       onClick={() => setResourcesAnchor(null)}
                       sx={{ 
                         padding: '8px 24px',
-                        '&:hover': { color: primaryColor }
+                        '&:hover': { color: theme.primaryColor }
                       }}
                     >
                       {item}
@@ -236,7 +242,7 @@ const LandingPage = () => {
                     color: 'text.primary',
                     cursor: 'pointer',
                     padding: '8px 16px',
-                    '&:hover': { color: primaryColor }
+                    '&:hover': { color: theme.primaryColor }
                   }}
                 >
                   Pricing
@@ -319,7 +325,7 @@ const LandingPage = () => {
               onClick={() => login()}
               sx={{
                 backgroundColor: 'white',
-                color: primaryColor,
+                color: theme.primaryColor,
                 px: 4,
                 py: 1,
                 fontSize: '1rem',
@@ -359,7 +365,7 @@ const LandingPage = () => {
               fontWeight: 800,
               mb: { xs: 2, md: 3 },  // Reduced margin
               fontSize: { xs: '1.8rem', md: '2.2rem' },  // Reduced font size
-              background: `linear-gradient(135deg, ${primaryColor} 0%, #9C27B0 100%)`,
+              background: `linear-gradient(135deg, ${theme.primaryColor} 0%, #9C27B0 100%)`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               letterSpacing: '-0.5px',
@@ -407,7 +413,7 @@ const LandingPage = () => {
                     left: 0,
                     right: 0,
                     height: '6px',  // Thicker top border
-                    background: `linear-gradient(90deg, ${primaryColor}, #9C27B0)`,
+                    background: `linear-gradient(90deg, ${theme.primaryColor}, #9C27B0)`,
                     borderRadius: '16px 16px 0 0',
                   },
                 }}
@@ -425,7 +431,7 @@ const LandingPage = () => {
                   <AutoAwesome 
                     sx={{ 
                       fontSize: '32px',  // Reduced icon size
-                      color: primaryColor,
+                      color: theme.primaryColor,
                     }} 
                   />
                 </Box>
@@ -487,7 +493,7 @@ const LandingPage = () => {
                     left: 0,
                     right: 0,
                     height: '6px',  // Thicker top border
-                    background: `linear-gradient(90deg, ${primaryColor}, #9C27B0)`,
+                    background: `linear-gradient(90deg, ${theme.primaryColor}, #9C27B0)`,
                     borderRadius: '16px 16px 0 0',
                   },
                 }}
@@ -505,7 +511,7 @@ const LandingPage = () => {
                   <ConnectWithoutContact 
                     sx={{ 
                       fontSize: '32px', 
-                      color: primaryColor,
+                      color: theme.primaryColor,
                     }} 
                   />
                 </Box>
@@ -567,7 +573,7 @@ const LandingPage = () => {
                     left: 0,
                     right: 0,
                     height: '6px',  // Thicker top border
-                    background: `linear-gradient(90deg, ${primaryColor}, #9C27B0)`,
+                    background: `linear-gradient(90deg, ${theme.primaryColor}, #9C27B0)`,
                     borderRadius: '16px 16px 0 0',
                   },
                 }}
@@ -585,7 +591,7 @@ const LandingPage = () => {
                   <Campaign 
                     sx={{ 
                       fontSize: '32px', 
-                      color: primaryColor,
+                      color: theme.primaryColor,
                     }} 
                   />
                 </Box>
@@ -647,7 +653,7 @@ const LandingPage = () => {
                     left: 0,
                     right: 0,
                     height: '6px',  // Thicker top border
-                    background: `linear-gradient(90deg, ${primaryColor}, #9C27B0)`,
+                    background: `linear-gradient(90deg, ${theme.primaryColor}, #9C27B0)`,
                     borderRadius: '16px 16px 0 0',
                   },
                 }}
@@ -665,7 +671,7 @@ const LandingPage = () => {
                   <Analytics 
                     sx={{ 
                       fontSize: '32px', 
-                      color: primaryColor,
+                      color: theme.primaryColor,
                     }} 
                   />
                 </Box>
@@ -724,7 +730,7 @@ const LandingPage = () => {
             sx={{ 
               fontWeight: 'bold', 
               marginBottom: '40px',
-              color: primaryColor,
+              color: theme.primaryColor,
             }}
           >
             How Does AdSensei Work?
@@ -803,7 +809,7 @@ const LandingPage = () => {
                       width: 40,
                       height: 40,
                       borderRadius: '50%',
-                      backgroundColor: primaryColor,
+                      backgroundColor: theme.primaryColor,
                       color: 'white',
                       display: 'flex',
                       alignItems: 'center',
@@ -821,7 +827,7 @@ const LandingPage = () => {
                       sx={{
                         mb: 1,
                         fontWeight: 'bold',
-                        color: primaryColor,
+                        color: theme.primaryColor,
                       }}
                     >
                       {step.title}
@@ -859,7 +865,7 @@ const LandingPage = () => {
               fontWeight: 800,
               mb: { xs: 6, md: 10 },
               fontSize: { xs: '2rem', md: '2.5rem' },
-              background: `linear-gradient(135deg, ${primaryColor} 0%, #9C27B0 100%)`,
+              background: `linear-gradient(135deg, ${theme.primaryColor} 0%, #9C27B0 100%)`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
@@ -932,7 +938,7 @@ const LandingPage = () => {
                     sx={{
                       fontWeight: 'bold',
                       mb: 1,
-                      color: primaryColor,
+                      color: theme.primaryColor,
                       fontSize: '1.3rem',  // Slightly smaller title
                     }}
                   >
@@ -969,8 +975,8 @@ const LandingPage = () => {
       {/* Footer */}
       <Box
         sx={{
-          backgroundColor: primaryColor,
-          color: secondaryColor,
+          backgroundColor: theme.primaryColor,
+          color: theme.secondaryColor,
           padding: '20px',
           textAlign: 'center',
         }}
