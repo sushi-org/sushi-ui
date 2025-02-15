@@ -15,11 +15,14 @@ import {
   Analytics, 
   AutoAwesome, 
   ConnectWithoutContact, 
-  Campaign 
+  Campaign,
+  Menu as MenuIcon
 } from '@mui/icons-material';
 import LoginButton from './LoginButton';
 import useGoogleAuth from '../hooks/useGoogleAuth';
 import { useNavigate } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
+import Drawer from '@mui/material/Drawer';
 
 // Define theme colors
 const theme = {
@@ -35,6 +38,9 @@ const LandingPage = () => {
   // Only declare state variables that are used
   const [productAnchor, setProductAnchor] = useState(null);
   const [resourcesAnchor, setResourcesAnchor] = useState(null);
+
+  // Add new state for mobile menu
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Menu items
   const productItems = [
@@ -62,15 +68,14 @@ const LandingPage = () => {
         <Container maxWidth="xl">
           <Toolbar sx={{ 
             justifyContent: 'space-between',
-            pl: { xs: 1, md: 4 },  // Added left padding, more on larger screens
-            pr: { xs: 1, md: 4 },  // Added right padding, more on larger screens
+            pl: { xs: 1, md: 4 },
+            pr: { xs: 1, md: 4 },
           }}>
             <Box 
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center',
                 gap: 2,
-                marginRight: 'auto',
               }}
             >
               <Box
@@ -88,20 +93,19 @@ const LandingPage = () => {
                 sx={{ 
                   color: theme.primaryColor,
                   fontWeight: 'bold',
-                  marginRight: 'auto',
                 }}
               >
                 FigSprout
               </Typography>
             </Box>
 
-            {/* Navigation Items - Added margin to create space between nav and login */}
+            {/* Desktop Navigation */}
             <Box sx={{ 
-              display: 'flex', 
+              display: { xs: 'none', md: 'flex' },
               gap: 4,
               alignItems: 'center',
               height: '64px',
-              mr: 6,  // Add margin to the right of navigation items
+              mr: 6,
             }}>
               {/* Product Dropdown */}
               <Box
@@ -116,7 +120,7 @@ const LandingPage = () => {
               >
                 <Typography
                   sx={{ 
-                    color: 'text.primary', 
+                    color: 'text.primary',
                     cursor: 'pointer',
                     padding: '8px 16px',
                     display: 'flex',
@@ -190,6 +194,7 @@ const LandingPage = () => {
               {/* Resources Dropdown */}
               <Box
                 onMouseEnter={(e) => setResourcesAnchor(e.currentTarget)}
+                onMouseLeave={() => setResourcesAnchor(null)}
                 sx={{ 
                   height: '100%',
                   display: 'flex',
@@ -199,7 +204,7 @@ const LandingPage = () => {
               >
                 <Typography
                   sx={{ 
-                    color: 'text.primary', 
+                    color: 'text.primary',
                     cursor: 'pointer',
                     padding: '8px 16px',
                     '&:hover': { color: theme.primaryColor }
@@ -268,8 +273,110 @@ const LandingPage = () => {
               </Box>
             </Box>
 
-            {/* Login Button */}
-            <LoginButton />
+            {/* Mobile Menu Icon */}
+            <IconButton
+              sx={{ 
+                display: { xs: 'flex', md: 'none' },
+                mr: 2,
+              }}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            {/* Mobile Navigation Drawer */}
+            <Drawer
+              anchor="right"
+              open={mobileMenuOpen}
+              onClose={() => setMobileMenuOpen(false)}
+              sx={{
+                '& .MuiDrawer-paper': {
+                  width: '280px',
+                  background: 'white',
+                  boxSizing: 'border-box',
+                  p: 2,
+                },
+              }}
+            >
+              <Box sx={{ mb: 2, p: 2 }}>
+                <Typography variant="h6" sx={{ color: theme.primaryColor, fontWeight: 'bold' }}>
+                  Menu
+                </Typography>
+              </Box>
+
+              {/* Product Items */}
+              <Box sx={{ p: 2 }}>
+                <Typography
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 'bold',
+                    mb: 1,
+                  }}
+                >
+                  Product
+                </Typography>
+                {productItems.map((item) => (
+                  <MenuItem 
+                    key={item}
+                    onClick={() => setMobileMenuOpen(false)}
+                    sx={{ 
+                      py: 1,
+                      px: 2,
+                      '&:hover': { color: theme.primaryColor }
+                    }}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Box>
+
+              {/* Resources Items */}
+              <Box sx={{ p: 2 }}>
+                <Typography
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 'bold',
+                    mb: 1,
+                  }}
+                >
+                  Resources
+                </Typography>
+                {resourceItems.map((item) => (
+                  <MenuItem 
+                    key={item}
+                    onClick={() => setMobileMenuOpen(false)}
+                    sx={{ 
+                      py: 1,
+                      px: 2,
+                      '&:hover': { color: theme.primaryColor }
+                    }}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Box>
+
+              {/* Pricing */}
+              <MenuItem 
+                onClick={() => setMobileMenuOpen(false)}
+                sx={{ 
+                  p: 2,
+                  '&:hover': { color: theme.primaryColor }
+                }}
+              >
+                Pricing
+              </MenuItem>
+
+              {/* Login Button in Mobile Menu */}
+              <Box sx={{ p: 2 }}>
+                <LoginButton fullWidth />
+              </Box>
+            </Drawer>
+
+            {/* Desktop Login Button */}
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <LoginButton />
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
