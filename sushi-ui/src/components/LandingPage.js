@@ -45,7 +45,7 @@ const LandingPage = () => {
   ];
 
   const resourceItems = [
-    'Why AdSensei?',
+    'Why FigSprout?',
     'About Us',
     'Blogs'
   ];
@@ -74,7 +74,7 @@ const LandingPage = () => {
                 marginRight: 'auto',  // Pushes logo to the left
               }}
             >
-              AdSensei
+              FigSprout
             </Typography>
 
             {/* Navigation Items - Added margin to create space between nav and login */}
@@ -306,7 +306,7 @@ const LandingPage = () => {
                 textShadow: '0 2px 10px rgba(0,0,0,0.2)',
               }}
             >
-              AdSensei
+              FigSprout
             </Typography>
             <Typography 
               variant="h5" 
@@ -317,7 +317,19 @@ const LandingPage = () => {
                 maxWidth: '800px',
               }}
             >
-              AI-Powered Marketing Agent to Improve Your Ad Spend ROI
+              Sprout your marketing reach with a click
+             
+            </Typography>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                color: 'rgba(255,255,255,0.9)',
+                lineHeight: 1.3,
+                fontSize: { xs: '1rem', md: '1.2rem' },
+                maxWidth: '800px',
+              }}
+            >
+              AI-Powered Marketing Agent for SMB's to Improve Ad Spend ROI
             </Typography>
             <Button
               variant="contained"
@@ -733,13 +745,13 @@ const LandingPage = () => {
               color: theme.primaryColor,
             }}
           >
-            How Does AdSensei Work?
+            How Does FigSprout Work?
           </Typography>
           
           <Box
             component="img"
             src="/diagram.png"
-            alt="AdSensei Workflow Diagram"
+            alt="FigSprout Workflow Diagram"
             sx={{
               width: '100%',
               maxWidth: '1200px',
@@ -773,7 +785,7 @@ const LandingPage = () => {
               {
                 number: '3',
                 title: 'Performance Tracking',
-                description: 'AdSensei will automate aggregate campaign metrics and results for easy viewing.'
+                description: 'FigSprout will automate aggregate campaign metrics and results for easy viewing.'
               },
               {
                 number: '4',
@@ -849,7 +861,7 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* How AdSensei Helps Section */}
+      {/* How FigSprout Helps Section */}
       <Box
         sx={{
           background: 'linear-gradient(180deg, #F8F5FB 0%, #FFF 100%)',
@@ -870,7 +882,7 @@ const LandingPage = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            How Does AdSensei Help?
+            How Does FigSprout Help?
           </Typography>
 
           <Grid 
@@ -982,7 +994,7 @@ const LandingPage = () => {
         }}
       >
         <Typography variant="body1">
-          © 2025 AdSensei. All rights reserved.
+          © 2025 FigSprout. All rights reserved.
         </Typography>
       </Box>
     </Box>
