@@ -1,0 +1,14 @@
+{
+  "name": "sushi-ui",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  }
+} 
