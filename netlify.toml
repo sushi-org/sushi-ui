@@ -1,6 +1,6 @@
 [build]
   base = "sushi-ui"
-  command = "npm run build"
+  command = "CI=false && npm run build"
   publish = "sushi-ui/build"
 
 [[redirects]]
