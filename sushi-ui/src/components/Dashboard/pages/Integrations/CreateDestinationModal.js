@@ -33,6 +33,58 @@ const destinations = [
   { id: 'reddit', name: 'Reddit Ads', icon: RedditIcon },
 ];
 
+const platformConfig = {
+  facebook: {
+    endpoint: 'fb',
+    buttonColor: '#1877F2',
+    hoverColor: '#0C63D4',
+    icon: FacebookIcon,
+    buttonText: 'Connect with Facebook'
+  },
+  instagram: {
+    endpoint: 'instagram',
+    buttonColor: '#E4405F',
+    hoverColor: '#D32D4A',
+    icon: InstagramIcon,
+    buttonText: 'Connect with Instagram'
+  },
+  linkedin: {
+    endpoint: 'linkedin',
+    buttonColor: '#0A66C2',
+    hoverColor: '#004182',
+    icon: LinkedInIcon,
+    buttonText: 'Connect with LinkedIn'
+  },
+  google: {
+    endpoint: 'google',
+    buttonColor: '#DB4437',
+    hoverColor: '#C22E21',
+    icon: GoogleIcon,
+    buttonText: 'Connect with Google'
+  },
+  twitter: {
+    endpoint: 'twitter',
+    buttonColor: '#1DA1F2',
+    hoverColor: '#0C85D0',
+    icon: XIcon,
+    buttonText: 'Connect with X (Twitter)'
+  },
+  tiktok: {
+    endpoint: 'tiktok',
+    buttonColor: '#000000',
+    hoverColor: '#1A1A1A',
+    icon: SmartDisplayIcon,
+    buttonText: 'Connect with TikTok'
+  },
+  reddit: {
+    endpoint: 'reddit',
+    buttonColor: '#FF4500',
+    hoverColor: '#E03D00',
+    icon: RedditIcon,
+    buttonText: 'Connect with Reddit'
+  }
+};
+
 const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 0 }) => {
   const [activeStep, setActiveStep] = useState(initialStep);
   const [selectedDestination, setSelectedDestination] = useState(initialPlatform);
@@ -60,94 +112,11 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
     setSelectedDestination(destinationId);
   };
 
-  // Define connect handlers for each platform
-  const handleFacebookConnect = () => {
-    window.location.href = 'YOUR_FACEBOOK_OAUTH_URL';
-  };
-
-  const handleInstagramConnect = () => {
-    window.location.href = 'YOUR_INSTAGRAM_OAUTH_URL';
-  };
-
-  const handleLinkedInConnect = () => {
-    window.location.href = 'YOUR_LINKEDIN_OAUTH_URL';
-  };
-
-  const handleGoogleConnect = () => {
-    window.location.href = 'YOUR_GOOGLE_OAUTH_URL';
-  };
-
-  const handleTwitterConnect = () => {
-    window.location.href = 'YOUR_TWITTER_OAUTH_URL';
-  };
-
-  const handleTikTokConnect = () => {
-    window.location.href = 'YOUR_TIKTOK_OAUTH_URL';
-  };
-
-  const handleRedditConnect = () => {
-    window.location.href = 'YOUR_REDDIT_OAUTH_URL';
-  };
-
-  // Platform configuration object
-  const platformConfig = {
-    facebook: {
-      handler: handleFacebookConnect,
-      buttonColor: '#1877F2',
-      hoverColor: '#0C63D4',
-      icon: FacebookIcon,
-      buttonText: 'Log in with Facebook'
-    },
-    instagram: {
-      handler: handleInstagramConnect,
-      buttonColor: '#E4405F',
-      hoverColor: '#D32D4A',
-      icon: InstagramIcon,
-      buttonText: 'Log in with Instagram'
-    },
-    linkedin: {
-      handler: handleLinkedInConnect,
-      buttonColor: '#0A66C2',
-      hoverColor: '#004182',
-      icon: LinkedInIcon,
-      buttonText: 'Log in with LinkedIn'
-    },
-    google: {
-      handler: handleGoogleConnect,
-      buttonColor: '#DB4437',
-      hoverColor: '#C22E21',
-      icon: GoogleIcon,
-      buttonText: 'Log in with Google'
-    },
-    twitter: {
-      handler: handleTwitterConnect,
-      buttonColor: '#1DA1F2',
-      hoverColor: '#0C85D0',
-      icon: XIcon,
-      buttonText: 'Log in with X (Twitter)'
-    },
-    tiktok: {
-      handler: handleTikTokConnect,
-      buttonColor: '#000000',
-      hoverColor: '#1A1A1A',
-      icon: SmartDisplayIcon,
-      buttonText: 'Log in with TikTok'
-    },
-    reddit: {
-      handler: handleRedditConnect,
-      buttonColor: '#FF4500',
-      hoverColor: '#E03D00',
-      icon: RedditIcon,
-      buttonText: 'Log in with Reddit'
-    }
-  };
-
-  const handleFacebookAuth = () => {
+  const handlePlatformAuth = (platform) => {
     setIsAuthenticating(true);
-    // Add callback URL to return to our app
-    const callbackUrl = `${window.location.origin}/dashboard/integrations?platform=facebook&status=success`;
+    const callbackUrl = `${window.location.origin}/dashboard/integrations?platform=${platform}&status=success`;
     const encodedCallback = encodeURIComponent(callbackUrl);
-    window.location.href = `http://localhost:8000/api/v1/destination/oauth/fb?callback_url=${encodedCallback}`;
+    window.location.href = `http://localhost:8000/api/v1/destination/oauth/${platformConfig[platform].endpoint}?callback_url=${encodedCallback}`;
   };
 
   const SelectDestinationStep = () => (
@@ -215,91 +184,70 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
   );
 
   const ConnectDestinationStep = () => {
-    const selectedPlatform = destinations.find(d => d.id === selectedDestination);
+    if (!selectedDestination) return null;
+    
     const platformSettings = platformConfig[selectedDestination];
-
     if (!platformSettings) return null;
 
     const PlatformIcon = platformSettings.icon;
 
-    const renderStepTwo = () => {
-      if (selectedPlatform.id === 'facebook') {
-        return (
-          <Box sx={{ textAlign: 'center', py: 2 }}>
-            {isAuthenticated ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                <CheckCircle 
-                  sx={{ 
-                    fontSize: 60, 
-                    color: 'success.main',
-                    animation: 'fadeIn 0.5s ease-in'
-                  }} 
-                />
-                <Typography>
-                  FigSprout has successfully integrated with Facebook Account
-                </Typography>
-              </Box>
-            ) : (
+    return (
+      <Box sx={{ 
+        height: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Box sx={{ maxWidth: '480px', textAlign: 'center' }}>
+          {isAuthenticated ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+              <CheckCircle 
+                sx={{ 
+                  fontSize: 60, 
+                  color: 'success.main',
+                  animation: 'fadeIn 0.5s ease-in'
+                }} 
+              />
+              <Typography>
+                FigSprout has successfully integrated with {platformSettings.buttonText.replace('Connect with ', '')}
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              <PlatformIcon sx={{ fontSize: 48, color: platformSettings.buttonColor, mb: 3 }} />
+              <Typography variant="h5" sx={{ mb: 2, color: '#1A1A1A', fontWeight: 600 }}>
+                Connect to {platformSettings.buttonText.replace('Connect with ', '')}
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
+                FigSprout requires limited access to your account.
+                Your credentials will be encrypted, and authorization can be revoked at any time.
+              </Typography>
               <Button
                 variant="contained"
-                onClick={handleFacebookAuth}
+                onClick={() => handlePlatformAuth(selectedDestination)}
                 disabled={isAuthenticating}
-                startIcon={isAuthenticating ? <CircularProgress size={20} /> : <FacebookIcon />}
+                startIcon={isAuthenticating ? <CircularProgress size={20} /> : <PlatformIcon />}
                 sx={{
-                  backgroundColor: '#1877F2',
+                  backgroundColor: platformSettings.buttonColor,
                   '&:hover': {
-                    backgroundColor: '#0C63D4',
-                  }
+                    backgroundColor: platformSettings.hoverColor,
+                  },
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
                 }}
               >
-                {isAuthenticating ? 'Redirecting...' : 'Connect with Facebook'}
+                {isAuthenticating ? 'Connecting...' : platformSettings.buttonText}
               </Button>
-            )}
-          </Box>
-        );
-      }
-      return (
-        <Box sx={{ 
-          height: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <Box sx={{ maxWidth: '480px', textAlign: 'center' }}>
-            <PlatformIcon sx={{ fontSize: 48, color: platformSettings.buttonColor, mb: 3 }} />
-            <Typography variant="h5" sx={{ mb: 2, color: '#1A1A1A', fontWeight: 600 }}>
-              Connect to {selectedPlatform?.name}
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4, lineHeight: 1.6 }}>
-              FigSprout requires limited access to your account.
-              Your credentials will be encrypted, and authorization can be revoked at any time.
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={platformSettings.handler}
-              startIcon={<PlatformIcon />}
-              sx={{
-                backgroundColor: platformSettings.buttonColor,
-                '&:hover': {
-                  backgroundColor: platformSettings.hoverColor,
-                },
-                px: 4,
-                py: 1.5,
-                borderRadius: '8px',
-                textTransform: 'none',
-                fontSize: '1rem',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-              }}
-            >
-              {platformSettings.buttonText}
-            </Button>
-          </Box>
+            </>
+          )}
         </Box>
-      );
-    };
-
-    return renderStepTwo();
+      </Box>
+    );
   };
 
   const FinalizeDestinationStep = () => (
