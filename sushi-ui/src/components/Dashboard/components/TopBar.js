@@ -17,11 +17,13 @@ import {
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../../context/UserContext';
 
-const TopBar = ({ user }) => {
+const TopBar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const primaryColor = '#6A1B9B';
+  const { user } = useUser();
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,7 +57,7 @@ const TopBar = ({ user }) => {
               fontWeight: 500
             }}
           >
-            {user.name.charAt(0)}
+            {user?.first_name ? user.first_name[0].toUpperCase() : '?'}
           </Avatar>
         </IconButton>
         <Menu

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 
@@ -9,6 +9,7 @@ import Campaign from './pages/Campaign';
 import Content from './pages/Content';
 import Audience from './pages/Audience';
 import Integrations from './pages/Integrations';
+import CreateDestinationModal from './pages/Integrations/CreateDestinationModal';
 
 const Dashboard = () => {
   const user = {
@@ -18,6 +19,24 @@ const Dashboard = () => {
   };
 
   const drawerWidth = 280;
+  const [showDestinationModal, setShowDestinationModal] = useState(false);
+  const [initialPlatform, setInitialPlatform] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check URL parameters for OAuth callback
+    const params = new URLSearchParams(location.search);
+    const platform = params.get('platform');
+    const status = params.get('status');
+
+    if (platform && status === 'success') {
+      setInitialPlatform(platform);
+      setShowDestinationModal(true);
+      // Clean up URL
+      navigate('/dashboard/integrations', { replace: true });
+    }
+  }, [location, navigate]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -36,6 +55,15 @@ const Dashboard = () => {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Box>
+      <CreateDestinationModal 
+        open={showDestinationModal} 
+        onClose={() => {
+          setShowDestinationModal(false);
+          setInitialPlatform(null);
+        }}
+        initialPlatform={initialPlatform}
+        initialStep={initialPlatform ? 1 : 0}
+      />
     </Box>
   );
 };

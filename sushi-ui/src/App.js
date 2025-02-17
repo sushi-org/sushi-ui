@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
+import { UserProvider } from './context/UserContext';
 
 function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -18,14 +19,16 @@ function App() {
   }
 
   return (
-    <Router>
-      <GoogleOAuthProvider clientId={clientId}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
-        </Routes>
-      </GoogleOAuthProvider>
-    </Router>
+    <UserProvider>
+      <Router>
+        <GoogleOAuthProvider clientId={clientId}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
+          </Routes>
+        </GoogleOAuthProvider>
+      </Router>
+    </UserProvider>
   );
 }
 

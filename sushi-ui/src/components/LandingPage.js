@@ -23,6 +23,7 @@ import useGoogleAuth from '../hooks/useGoogleAuth';
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
+import ErrorDialog from './common/ErrorDialog';
 
 // Define theme colors
 const theme = {
@@ -33,7 +34,7 @@ const theme = {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const login = useGoogleAuth();
+  const { handleGoogleLogin, error, clearError } = useGoogleAuth();
 
   // Only declare state variables that are used
   const [productAnchor, setProductAnchor] = useState(null);
@@ -459,7 +460,7 @@ const LandingPage = () => {
             <Button
               variant="contained"
               size="medium"
-              onClick={() => login()}
+              onClick={handleGoogleLogin}
               sx={{
                 backgroundColor: '#9464e8',
                 color: 'white',
@@ -482,6 +483,12 @@ const LandingPage = () => {
           </Box>
         </Container>
       </Box>
+
+      <ErrorDialog
+        open={error.show}
+        onClose={clearError}
+        errorMessage={error.message}
+      />
 
       {/* Key Features Section */}
       <Box
@@ -905,7 +912,7 @@ const LandingPage = () => {
               {
                 number: '2',
                 title: 'AI-Powered Optimization',
-                description: "Ad Sensei's Marketing AI will initially automate variations of Content, Audience, and Ad Spend. Then it will create and manage the Ad Campaigns in different Ad Platforms."
+                description: "FigSprout's Marketing AI will initially automate variations of Content, Audience, and Ad Spend. Then it will create and manage the Ad Campaigns in different Ad Platforms."
               },
               {
                 number: '3',
