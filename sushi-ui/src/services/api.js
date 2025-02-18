@@ -2,14 +2,20 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const loginWithGoogle = async (accessToken) => {
   try {
-    console.log("Calling login API...");
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+    const apiUrl = `${process.env.REACT_APP_API_URL}/login`;
+    console.log("Calling login API at:", apiUrl); // Debug log
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify({ token: accessToken }),
     });
+
+    // Log response headers for debugging
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
     const data = await response.json();
     console.log("API Response:", data);
