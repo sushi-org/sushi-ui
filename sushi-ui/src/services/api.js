@@ -11,6 +11,7 @@ export const loginWithGoogle = async (accessToken) => {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({ token: accessToken }),
     });
 
