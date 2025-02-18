@@ -116,7 +116,7 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
     setIsAuthenticating(true);
     const callbackUrl = `${window.location.origin}/dashboard/integrations?platform=${platform}&status=success`;
     const encodedCallback = encodeURIComponent(callbackUrl);
-    window.location.href = `http://localhost:8000/api/v1/destination/oauth/${platformConfig[platform].endpoint}?callback_url=${encodedCallback}`;
+    window.location.href = `${process.env.REACT_APP_API_URL}/destination/oauth/${platformConfig[platform].endpoint}?callback_url=${encodedCallback}`;
   };
 
   const SelectDestinationStep = () => (

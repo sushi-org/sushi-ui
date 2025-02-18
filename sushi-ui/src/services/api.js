@@ -1,9 +1,9 @@
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const loginWithGoogle = async (accessToken) => {
   try {
     console.log("Calling login API...");
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
