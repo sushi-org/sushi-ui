@@ -3,6 +3,11 @@
   command = "CI=false && npm run build"
   publish = "build"
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "connect-src 'self' https://accounts.google.com https://sushi-api-951508746812.asia-southeast1.run.app"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
