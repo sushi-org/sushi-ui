@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Provider } from 'react-redux';
-import { store } from './store';
+import { store } from './store/store';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 

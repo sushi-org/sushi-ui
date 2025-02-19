@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -17,11 +17,23 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import WorkspaceSelector from './WorkspaceSelector';
+import { useSelector } from 'react-redux';
 
 const Sidebar = ({ drawerWidth = 280 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  
+  const dashboardState = useSelector((state) => {
+    console.log('Sidebar: Full Redux State:', state);
+    console.log('Sidebar: Dashboard State:', state.dashboard);
+    return state.dashboard || {};
+  });
+
+  useEffect(() => {
+    console.log('Sidebar: Dashboard state updated:', dashboardState);
+    console.log('Sidebar: Organization:', dashboardState?.organization);
+  }, [dashboardState]);
 
   const navItems = [
     { path: '/dashboard', icon: CampaignIcon, label: 'Campaign' },
@@ -90,10 +102,45 @@ const Sidebar = ({ drawerWidth = 280 }) => {
         </Typography>
       </Box>
 
-      {/* Workspace Selector */}
-      <Box sx={{ px: 2, mb: 3 }}>
-        <WorkspaceSelector />
-      </Box>
+      {/* Organization Name */}
+      {dashboardState?.organization?.name ? (
+        <Box sx={{ 
+          px: 3,
+          py: 2,
+          mx: 2,
+          mb: 2,
+          borderRadius: '8px',
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+        }}>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.5)',
+              fontSize: '0.75rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: '4px'
+            }}
+          >
+            Organization
+          </Typography>
+          <Typography
+            sx={{
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: 600,
+              lineHeight: '1.5'
+            }}
+          >
+            {dashboardState.organization.name}
+          </Typography>
+        </Box>
+      ) : (
+        <Box sx={{ px: 2, mb: 3 }}>
+          <WorkspaceSelector />
+        </Box>
+      )}
 
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
 
