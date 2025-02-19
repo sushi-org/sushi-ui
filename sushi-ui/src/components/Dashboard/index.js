@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../store/hooks';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 
@@ -12,12 +13,7 @@ import Integrations from './pages/Integrations';
 import CreateDestinationModal from './pages/Integrations/CreateDestinationModal';
 
 const Dashboard = () => {
-  const user = {
-    name: 'John Doe',
-    email: 'john@example.com',
-    workspaces: []
-  };
-
+  const user = useAppSelector(state => state.user.user);
   const drawerWidth = 280;
   const [showDestinationModal, setShowDestinationModal] = useState(false);
   const [initialPlatform, setInitialPlatform] = useState(null);

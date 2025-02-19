@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Select, 
   MenuItem, 
@@ -6,19 +6,21 @@ import {
   Box 
 } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import { useAppSelector, useAppDispatch } from '../../../store/hooks';
+import { setCurrentWorkspace } from '../../../store/slices/workspaceSlice';
 
 const WorkspaceSelector = () => {
-  const [workspace, setWorkspace] = useState('');
+  const dispatch = useAppDispatch();
+  const { currentWorkspace, workspaces } = useAppSelector(state => state.workspace);
   
-  // Mock user data - replace with actual user data
-  const user = {
-    workspaces: []
+  const handleWorkspaceChange = (event) => {
+    dispatch(setCurrentWorkspace(event.target.value));
   };
 
   return (
     <Select
-      value={workspace}
-      onChange={(e) => setWorkspace(e.target.value)}
+      value={currentWorkspace || ''}
+      onChange={handleWorkspaceChange}
       displayEmpty
       fullWidth
       sx={{
@@ -37,10 +39,10 @@ const WorkspaceSelector = () => {
       <MenuItem value="">
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <AddIcon />
-          <Typography>Add Workspace</Typography>
+          <Typography>Add Organization</Typography>
         </Box>
       </MenuItem>
-      {user.workspaces.map((ws) => (
+      {workspaces.map((ws) => (
         <MenuItem key={ws.id} value={ws.id}>
           {ws.name}
         </MenuItem>

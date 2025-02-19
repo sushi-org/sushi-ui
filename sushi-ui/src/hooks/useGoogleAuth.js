@@ -2,12 +2,13 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { loginWithGoogle } from '../services/api';
 import useApiError from './useApiError';
-import { useUser } from '../context/UserContext';
+import { useAppDispatch } from '../store/hooks';
+import { setUser } from '../store/slices/userSlice';
 
 const useGoogleAuth = () => {
   const navigate = useNavigate();
   const { error, handleError, clearError } = useApiError();
-  const { setUser } = useUser();
+  const dispatch = useAppDispatch();
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -16,8 +17,8 @@ const useGoogleAuth = () => {
         const response = await loginWithGoogle(tokenResponse.access_token);
         
         if (response) {
-          // Store user data
-          setUser(response);
+          // Store user data in Redux
+          dispatch(setUser(response));
           navigate('/dashboard');
         }
       } catch (error) {
