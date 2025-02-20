@@ -17,13 +17,15 @@ import {
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../../context/UserContext';
+import { useAppSelector, useAppDispatch } from '../../../store/hooks';
+import { clearUser } from '../../../store/slices/userSlice';
 
 const TopBar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const primaryColor = '#6A1B9B';
-  const { user } = useUser();
+  const user = useAppSelector(state => state.user.user);
+  const dispatch = useAppDispatch();
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -35,6 +37,7 @@ const TopBar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('googleToken');
+    dispatch(clearUser());
     navigate('/');
   };
 

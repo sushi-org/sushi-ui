@@ -1,9 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
-import { UserProvider } from './context/UserContext';
 
 function App() {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -19,7 +20,7 @@ function App() {
   }
 
   return (
-    <UserProvider>
+    <Provider store={store}>
       <Router>
         <GoogleOAuthProvider clientId={clientId}>
           <Routes>
@@ -28,7 +29,7 @@ function App() {
           </Routes>
         </GoogleOAuthProvider>
       </Router>
-    </UserProvider>
+    </Provider>
   );
 }
 
