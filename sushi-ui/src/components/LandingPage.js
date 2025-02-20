@@ -1,5 +1,5 @@
 // src/components/LandingPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Typography, 
   Container, 
@@ -24,6 +24,11 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 import ErrorDialog from './common/ErrorDialog';
+import { useAppDispatch } from '../store/hooks';
+import { useSelector } from 'react-redux';
+import { checkAuthStatus, getDashboardData } from '../services/api';
+import { setUser } from '../store/slices/userSlice';
+import { setDashboardData } from '../store/slices/dashboardSlice';
 
 // Define theme colors
 const theme = {
@@ -34,7 +39,18 @@ const theme = {
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { handleGoogleLogin, error, clearError } = useGoogleAuth();
+  const dispatch = useAppDispatch();
+  const { login, error, clearError } = useGoogleAuth();
+  const user = useSelector((state) => state.user.user);
+
+  // Remove the useEffect that checks auth on load
+  
+  // Only check auth if user is already in Redux state
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   // Only declare state variables that are used
   const [productAnchor, setProductAnchor] = useState(null);
@@ -56,6 +72,37 @@ const LandingPage = () => {
     'About Us',
     'Blogs'
   ];
+
+  const handleGetStarted = async () => {
+    try {
+      console.log('Starting get started process...');
+      
+      // 1. Check auth status first
+      try {
+        const userData = await checkAuthStatus();
+        console.log('Auth check successful, user is authenticated');
+        
+        // 2. If authenticated, set user and fetch dashboard data
+        dispatch(setUser(userData));
+        const dashboardData = await getDashboardData();
+        if (dashboardData?.organization) {
+          dispatch(setDashboardData(dashboardData));
+        }
+        navigate('/dashboard');
+        return;
+      } catch (error) {
+        // 3. If not authenticated (401), show Google login
+        if (error.message === 'Not authenticated') {
+          console.log('User not authenticated, showing Google login');
+          await login();
+        } else {
+          throw error;
+        }
+      }
+    } catch (error) {
+      console.error('Get started failed:', error);
+    }
+  };
 
   return (
     <Box
@@ -460,7 +507,7 @@ const LandingPage = () => {
             <Button
               variant="contained"
               size="medium"
-              onClick={handleGoogleLogin}
+              onClick={handleGetStarted}
               sx={{
                 backgroundColor: '#9464e8',
                 color: 'white',

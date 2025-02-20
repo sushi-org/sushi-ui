@@ -4,8 +4,10 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
-import { getDashboardData } from '../../services/api';
+import { getDashboardData, checkAuthStatus } from '../../services/api';
 import { setDashboardData } from '../../store/slices/dashboardSlice';
+import { clearUser, setUser } from '../../store/slices/userSlice';
+import { setUser as storeSetUser } from '../../store/slices/userSlice';
 
 // Import page components - make sure these are default exports
 import Campaign from './pages/Campaign/index.js';  // Update the path if needed
@@ -25,23 +27,34 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const initDashboard = async () => {
       try {
-        console.log('Dashboard component: Fetching dashboard data...');
-        const data = await getDashboardData();
-        console.log('Dashboard component: Received data:', data);
-        
-        if (data && data.organization) {
-          console.log('Dashboard component: Dispatching data to Redux');
-          dispatch(setDashboardData(data));
+        // Only check auth if we don't have a user
+        if (!user) {
+          const userData = await checkAuthStatus();
+          if (userData) {
+            dispatch(storeSetUser(userData));
+          } else {
+            navigate('/');
+            return;
+          }
+        }
+
+        // Only fetch dashboard data if we don't have it
+        if (!dashboardData?.organization) {
+          const data = await getDashboardData();
+          if (data && data.organization) {
+            dispatch(setDashboardData(data));
+          }
         }
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error('Dashboard initialization failed:', error);
+        navigate('/');
       }
     };
 
-    fetchDashboardData();
-  }, [dispatch]);
+    initDashboard();
+  }, [dispatch, navigate, user, dashboardData]);
 
   useEffect(() => {
     // Check URL parameters for OAuth callback
