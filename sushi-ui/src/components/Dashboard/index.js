@@ -5,9 +5,10 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 import { getDashboardData, checkAuthStatus } from '../../services/api';
-import { setDashboardData } from '../../store/slices/dashboardSlice';
+import { setDashboardData, getDashboardData as fetchDashboardData } from '../../store/slices/dashboardSlice';
 import { clearUser, setUser } from '../../store/slices/userSlice';
 import { setUser as storeSetUser } from '../../store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 
 // Import page components - make sure these are default exports
 import Campaign from './pages/Campaign/index.js';  // Update the path if needed
@@ -25,6 +26,7 @@ const Dashboard = () => {
   const [initialPlatform, setInitialPlatform] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const storeDispatch = useDispatch();
 
   useEffect(() => {
     const initDashboard = async () => {
@@ -69,6 +71,11 @@ const Dashboard = () => {
       navigate('/dashboard/integrations', { replace: true });
     }
   }, [location, navigate]);
+
+  useEffect(() => {
+    // Fetch dashboard data when component mounts
+    storeDispatch(fetchDashboardData());
+  }, [storeDispatch]);
 
   return (
     <Box sx={{ display: 'flex' }}>

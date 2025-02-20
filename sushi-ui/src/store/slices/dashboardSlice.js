@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { getDashboardData as apiGetDashboardData } from '../../services/api';
 
 const initialState = {
   campaigns: [],
@@ -16,6 +17,14 @@ const dashboardSlice = createSlice({
     }
   }
 });
+
+export const getDashboardData = createAsyncThunk(
+  'dashboard/getDashboardData',
+  async () => {
+    const response = await apiGetDashboardData();
+    return response;
+  }
+);
 
 export const { setDashboardData } = dashboardSlice.actions;
 export default dashboardSlice.reducer; 
