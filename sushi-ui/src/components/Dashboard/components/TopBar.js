@@ -24,7 +24,7 @@ const TopBar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const primaryColor = '#6A1B9B';
-  const user = useAppSelector(state => state.user.user);
+  const { firstName, lastName } = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
 
   const handleProfileClick = (event) => {
@@ -60,7 +60,7 @@ const TopBar = () => {
               fontWeight: 500
             }}
           >
-            {user?.first_name ? user.first_name[0].toUpperCase() : '?'}
+            {firstName ? firstName[0].toUpperCase() : '?'}
           </Avatar>
         </IconButton>
         <Menu

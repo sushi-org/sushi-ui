@@ -2,8 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getDashboardData as apiGetDashboardData } from '../../services/api';
 
 const initialState = {
+  loading: false,
+  error: null,
   campaigns: [],
-  organization: { name: '', organization_id: null }
 };
 
 const dashboardSlice = createSlice({
@@ -13,8 +14,12 @@ const dashboardSlice = createSlice({
     setDashboardData: (state, action) => {
       console.log('Setting dashboard data:', action.payload);
       state.campaigns = action.payload.campaigns || [];
-      state.organization = action.payload.organization || { name: '', organization_id: null };
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getDashboardData.fulfilled, (state, action) => {
+      state.campaigns = action.payload.campaigns || [];
+    });
   }
 });
 

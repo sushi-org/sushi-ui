@@ -42,12 +42,11 @@ const Dashboard = () => {
           }
         }
 
-        // Only fetch dashboard data if we don't have it
-        if (!dashboardData?.organization) {
-          const data = await getDashboardData();
-          if (data && data.organization) {
-            dispatch(setDashboardData(data));
-          }
+        // Always fetch fresh dashboard data
+        const data = await getDashboardData();
+        if (data) {
+          console.log('Setting dashboard data with organization:', data.organization);
+          dispatch(setDashboardData(data));
         }
       } catch (error) {
         console.error('Dashboard initialization failed:', error);
@@ -56,7 +55,12 @@ const Dashboard = () => {
     };
 
     initDashboard();
-  }, [dispatch, navigate, user, dashboardData]);
+  }, [dispatch, navigate, user]);
+
+  // Log organization name whenever it changes
+  useEffect(() => {
+    console.log('Current organization:', dashboardData?.organization);
+  }, [dashboardData?.organization]);
 
   useEffect(() => {
     // Check URL parameters for OAuth callback
@@ -80,7 +84,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar 
-        organizationName={dashboardData?.organization?.name || ''} 
+        organizationName={dashboardData?.organization?.name || 'Loading...'} 
         drawerWidth={drawerWidth} 
       />
       
