@@ -4,13 +4,10 @@ const API_URL = process.env.REACT_APP_API_URL;
 const commonHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'Cache-Control': 'no-cache',
-  'Pragma': 'no-cache'
 };
 
 const commonOptions = {
   credentials: 'include',
-  mode: 'cors',
   headers: commonHeaders,
 };
 
@@ -47,16 +44,13 @@ export const loginWithGoogle = async (accessToken) => {
 export const getDashboardData = async () => {
   try {
     console.log('Calling dashboard API with cookies...');
-    // Log cookies before making request (for debugging)
-    console.log("Document cookies before dashboard request:", document.cookie);
-
+    
     const response = await fetch(`${API_URL}/dashboard`, {
       ...commonOptions,
       method: 'GET',
     });
     
     console.log('Dashboard API response status:', response.status);
-    console.log('Dashboard response headers:', Object.fromEntries(response.headers));
     
     if (response.status === 401) {
       throw new Error('Unauthorized');
@@ -67,7 +61,16 @@ export const getDashboardData = async () => {
     }
     
     const data = await response.json();
-    console.log('Dashboard API raw response:', data);
+    console.log('Dashboard API response data:', {
+      organization: data.organization,
+      campaigns: data.campaigns?.length
+    });
+
+    // Validate organization data
+    if (!data.organization || !data.organization.name) {
+      console.warn('Missing or invalid organization data in response');
+    }
+
     return data;
   } catch (error) {
     console.error('Dashboard API error:', error);

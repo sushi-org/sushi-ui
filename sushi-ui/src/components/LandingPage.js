@@ -77,24 +77,44 @@ const LandingPage = () => {
     try {
       console.log('Starting get started process...');
       
-      // 1. Check auth status first
       try {
         const userData = await checkAuthStatus();
         console.log('Auth check successful, user is authenticated');
         
-        // 2. If authenticated, set user and fetch dashboard data
-        dispatch(setUser(userData));
+        // Set user data including organization info
+        dispatch(setUser({
+          member_id: userData.member_id,
+          email: userData.email,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          member_type: userData.member_type,
+          organization_id: userData.organization_id,
+          organization_name: userData.organization_name
+        }));
+
         const dashboardData = await getDashboardData();
-        if (dashboardData?.organization) {
-          dispatch(setDashboardData(dashboardData));
-        }
+        dispatch(setDashboardData(dashboardData));
         navigate('/dashboard');
         return;
       } catch (error) {
-        // 3. If not authenticated (401), show Google login
         if (error.message === 'Not authenticated') {
           console.log('User not authenticated, showing Google login');
-          await login();
+          const googleLoginData = await login();
+          
+          // After successful Google login, set the user data
+          dispatch(setUser({
+            member_id: googleLoginData.member_id,
+            email: googleLoginData.email,
+            first_name: googleLoginData.first_name,
+            last_name: googleLoginData.last_name,
+            member_type: googleLoginData.member_type,
+            organization_id: googleLoginData.organization_id,
+            organization_name: googleLoginData.organization_name
+          }));
+
+          const dashboardData = await getDashboardData();
+          dispatch(setDashboardData(dashboardData));
+          navigate('/dashboard');
         } else {
           throw error;
         }

@@ -24,6 +24,8 @@ const Sidebar = ({ drawerWidth = 280 }) => {
   const location = useLocation();
   const currentPath = location.pathname;
   
+  const { organizationName } = useSelector((state) => state.user);
+
   const dashboardState = useSelector((state) => {
     console.log('Sidebar: Full Redux State:', state);
     console.log('Sidebar: Dashboard State:', state.dashboard);
@@ -103,7 +105,7 @@ const Sidebar = ({ drawerWidth = 280 }) => {
       </Box>
 
       {/* Organization Name */}
-      {dashboardState?.organization?.name ? (
+      {organizationName ? (
         <Box sx={{ 
           px: 3,
           py: 2,
@@ -133,7 +135,7 @@ const Sidebar = ({ drawerWidth = 280 }) => {
               lineHeight: '1.5'
             }}
           >
-            {dashboardState.organization.name}
+            {organizationName}
           </Typography>
         </Box>
       ) : (
