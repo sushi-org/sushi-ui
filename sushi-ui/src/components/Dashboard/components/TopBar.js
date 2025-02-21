@@ -18,7 +18,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../../store/hooks';
-import { clearUser } from '../../../store/slices/userSlice';
+import { logout } from '../../../store/slices/userSlice';
 
 const TopBar = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const TopBar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('googleToken');
-    dispatch(clearUser());
+    dispatch(logout());
     navigate('/');
   };
 

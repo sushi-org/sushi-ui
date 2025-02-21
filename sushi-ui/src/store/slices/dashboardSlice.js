@@ -5,6 +5,8 @@ const initialState = {
   loading: false,
   error: null,
   campaigns: [],
+  organization: null,
+  lastFetched: null, // Add timestamp to track when data was last fetched
 };
 
 const dashboardSlice = createSlice({
@@ -14,12 +16,31 @@ const dashboardSlice = createSlice({
     setDashboardData: (state, action) => {
       console.log('Setting dashboard data:', action.payload);
       state.campaigns = action.payload.campaigns || [];
+      state.organization = action.payload.organization || null;
+      state.lastFetched = Date.now();
+      state.loading = false;
+      state.error = null;
+    },
+    clearDashboardData: (state) => {
+      return { ...initialState };
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(getDashboardData.fulfilled, (state, action) => {
-      state.campaigns = action.payload.campaigns || [];
-    });
+    builder
+      .addCase(getDashboardData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getDashboardData.fulfilled, (state, action) => {
+        state.campaigns = action.payload.campaigns || [];
+        state.organization = action.payload.organization || null;
+        state.lastFetched = Date.now();
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(getDashboardData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   }
 });
 
@@ -31,5 +52,5 @@ export const getDashboardData = createAsyncThunk(
   }
 );
 
-export const { setDashboardData } = dashboardSlice.actions;
+export const { setDashboardData, clearDashboardData } = dashboardSlice.actions;
 export default dashboardSlice.reducer; 

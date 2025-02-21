@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { clearDashboardData } from './dashboardSlice';
 
 const initialState = {
   memberId: null,
@@ -48,4 +49,10 @@ const userSlice = createSlice({
 });
 
 export const { setUser, setLoading, setError, clearUser } = userSlice.actions;
+
+export const logout = () => (dispatch) => {
+  dispatch(clearUser());
+  dispatch(clearDashboardData());
+};
+
 export default userSlice.reducer; 
