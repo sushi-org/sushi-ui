@@ -9,7 +9,9 @@ import {
   StepLabel,
   Paper,
   Radio,
-  Stack
+  Stack,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -19,7 +21,7 @@ import XIcon from '@mui/icons-material/X';
 import SmartDisplayIcon from '@mui/icons-material/SmartDisplay'; // for TikTok
 import RedditIcon from '@mui/icons-material/Reddit';
 import { CheckCircle } from '@mui/icons-material';
-import { CircularProgress } from '@mui/material';
+import { commonOptions } from '../../../../services/api';
 
 const steps = ['Select destination', 'Connect destination', 'Finalize destination'];
 
@@ -90,6 +92,10 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
   const [selectedDestination, setSelectedDestination] = useState(initialPlatform);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(initialPlatform ? true : false);
+  const [adAccounts, setAdAccounts] = useState([]);
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Add this useEffect to update states when props change
   useEffect(() => {
@@ -117,6 +123,82 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
     const callbackUrl = `${window.location.origin}/dashboard/integrations?platform=${platform}&status=success`;
     const encodedCallback = encodeURIComponent(callbackUrl);
     window.location.href = `${process.env.REACT_APP_API_URL}/destination/oauth/${platformConfig[platform].endpoint}?callback_url=${encodedCallback}`;
+  };
+
+  const fetchAdAccounts = async (platform) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Map platform to endpoint
+      const endpoint = platformConfig[platform]?.endpoint || platform;
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/ad/${endpoint}/accounts`, {
+        ...commonOptions,
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch ad accounts');
+      }
+
+      const data = await response.json();
+      setAdAccounts(data);
+    } catch (err) {
+      console.error('Error fetching ad accounts:', err);
+      setError('Failed to load ad accounts. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch ad accounts when component mounts
+  useEffect(() => {
+    if (selectedDestination) {
+      fetchAdAccounts(selectedDestination);
+    }
+  }, [selectedDestination]);
+
+  const handleAccountSelection = (account) => {
+    setSelectedAccounts(prev => {
+      const isSelected = prev.some(acc => acc.account_id === account.account_id);
+      if (isSelected) {
+        return prev.filter(acc => acc.account_id !== account.account_id);
+      } else {
+        return [...prev, account];
+      }
+    });
+  };
+
+  const handleFinish = async () => {
+    try {
+      const endpoint = platformConfig[selectedDestination]?.endpoint || selectedDestination;
+      
+      // Create the request payload with list of ad accounts
+      const payload = {
+        ad_accounts: selectedAccounts.map(account => ({
+          platform: endpoint,
+          account_id: account.account_id,
+          name: account.name,
+          currency: account.currency
+        }))
+      };
+
+      // Make single POST request with all accounts
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/ad/${endpoint}/accounts`, {
+        ...commonOptions,
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save accounts');
+      }
+
+      // Close modal on success
+      onClose();
+    } catch (err) {
+      console.error('Error saving accounts:', err);
+      setError('Failed to save selected accounts. Please try again.');
+    }
   };
 
   const SelectDestinationStep = () => (
@@ -250,22 +332,100 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
     );
   };
 
-  const FinalizeDestinationStep = () => (
-    <Box sx={{ 
-      height: '400px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}>
-      <Box sx={{ maxWidth: '480px', textAlign: 'center' }}>
+  const FinalizeDestinationStep = () => {
+    return (
+      <Box sx={{ 
+        height: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        p: 2,
+        overflow: 'auto'
+      }}>
         <Typography variant="h6" sx={{ mb: 3, color: '#1A1A1A' }}>
-          Finalize your destination settings
+          Select Ad Accounts
         </Typography>
-        {/* Add finalization settings here */}
+
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {!loading && !error && (
+          <Stack spacing={2}>
+            {adAccounts.map((account) => (
+              <Paper
+                key={account.account_id}
+                elevation={0}
+                sx={{
+                  p: 2.5,
+                  cursor: 'pointer',
+                  border: '1px solid',
+                  borderColor: selectedAccounts.some(acc => acc.account_id === account.account_id) 
+                    ? '#9464e8' 
+                    : '#E0E0E0',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    borderColor: '#9464e8',
+                    backgroundColor: 'rgba(148, 100, 232, 0.04)',
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+                  }
+                }}
+                onClick={() => handleAccountSelection(account)}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Radio
+                    checked={selectedAccounts.some(acc => acc.account_id === account.account_id)}
+                    sx={{
+                      color: '#9464e8',
+                      '&.Mui-checked': {
+                        color: '#9464e8',
+                      },
+                    }}
+                  />
+                  <Box sx={{ ml: 2 }}>
+                    <Typography 
+                      sx={{ 
+                        fontWeight: selectedAccounts.some(acc => acc.account_id === account.account_id) 
+                          ? 600 
+                          : 400,
+                        color: selectedAccounts.some(acc => acc.account_id === account.account_id) 
+                          ? '#9464e8' 
+                          : '#1A1A1A'
+                      }}
+                    >
+                      {account.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Account ID: {account.account_id}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+            ))}
+          </Stack>
+        )}
+
+        {!loading && !error && adAccounts.length === 0 && (
+          <Typography 
+            variant="body1" 
+            color="text.secondary"
+            sx={{ textAlign: 'center', py: 4 }}
+          >
+            No ad accounts found. Please make sure you have access to ad accounts on this platform.
+          </Typography>
+        )}
       </Box>
-    </Box>
-  );
+    );
+  };
 
   const getStepContent = (step) => {
     switch (step) {
@@ -396,8 +556,11 @@ const CreateDestinationModal = ({ open, onClose, initialPlatform, initialStep = 
               )}
               <Button
                 variant="contained"
-                onClick={handleNext}
-                disabled={!selectedDestination && activeStep === 0}
+                onClick={activeStep === steps.length - 1 ? handleFinish : handleNext}
+                disabled={
+                  (!selectedDestination && activeStep === 0) || 
+                  (activeStep === 2 && selectedAccounts.length === 0)
+                }
                 sx={{
                   backgroundColor: '#9464e8',
                   '&:hover': {

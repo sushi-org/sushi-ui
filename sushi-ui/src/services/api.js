@@ -1,14 +1,12 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
 // Common headers and request options
-const commonHeaders = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-};
-
-const commonOptions = {
+export const commonOptions = {
   credentials: 'include',
-  headers: commonHeaders,
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
 };
 
 export const loginWithGoogle = async (accessToken) => {
