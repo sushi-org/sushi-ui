@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
 import Sidebar from './components/Sidebar';
@@ -10,6 +10,13 @@ import Content from './pages/Content';
 import Audience from './pages/Audience';
 import Integrations from './pages/Integrations';
 import CreateDestinationModal from './pages/Integrations/CreateDestinationModal';
+
+// Define theme colors
+const theme = {
+  primaryColor: '#9464e8',    // Primary color
+  secondaryColor: '#FFFFFF',   // White
+  backgroundColor: '#F5F5F5',  // Light gray
+};
 
 const Dashboard = () => {
   const dashboardData = useAppSelector(state => state.dashboard);
