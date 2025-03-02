@@ -78,7 +78,7 @@ const Sidebar = ({ drawerWidth = 280 }) => {
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          gap: 2,
+          gap: 1.5,
         }}
         onClick={() => handleNavigation('/dashboard')}
       >
@@ -87,9 +87,10 @@ const Sidebar = ({ drawerWidth = 280 }) => {
           src="/fig.png"
           alt="FigSprout Logo"
           sx={{
-            width: 32,
-            height: 32,
+            width: 42,
+            height: 42,
             objectFit: 'contain',
+            display: 'block',
           }}
         />
         <Typography 
@@ -97,7 +98,9 @@ const Sidebar = ({ drawerWidth = 280 }) => {
           sx={{ 
             color: 'white',
             fontWeight: 'bold',
-            fontSize: '1.5rem'
+            fontSize: '1.4rem',
+            lineHeight: 1.1,
+            paddingTop: '13px',
           }}
         >
           FigSprout

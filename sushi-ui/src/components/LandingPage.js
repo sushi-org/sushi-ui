@@ -143,7 +143,7 @@ const LandingPage = () => {
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center',
-                gap: 2,
+                gap: 1,  // Reduced gap from 2 to 1
               }}
             >
               <Box
@@ -151,9 +151,10 @@ const LandingPage = () => {
                 src="/fig.png"
                 alt="FigSprout Logo"
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: 42,  // Slightly increased from 40
+                  height: 42,  // Slightly increased from 40
                   objectFit: 'contain',
+                  display: 'block',  // Ensures proper rendering
                 }}
               />
               <Typography 
@@ -161,6 +162,9 @@ const LandingPage = () => {
                 sx={{ 
                   color: theme.primaryColor,
                   fontWeight: 'bold',
+                  fontSize: '1.4rem',  // Slightly increased font size
+                  lineHeight: 1,  // Tightened line height for better alignment
+                  paddingTop: '2px',  // Fine-tuned vertical alignment
                 }}
               >
                 FigSprout
@@ -1053,6 +1057,136 @@ const LandingPage = () => {
                       {step.description}
                     </Typography>
                   </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Who Is FigSprout For? Section */}
+      <Box
+        sx={{
+          background: 'linear-gradient(180deg, #FFF 0%, #F8F5FB 100%)',
+          py: { xs: 8, md: 12 },
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(106, 27, 155, 0.1) 50%, transparent 100%)',
+          },
+        }}
+      >
+        <Container>
+          <Typography 
+            variant="h4" 
+            align="center" 
+            gutterBottom 
+            sx={{ 
+              fontWeight: 'bold', 
+              marginBottom: '40px',
+              color: theme.primaryColor,
+            }}
+          >
+            Who Is FigSprout For?
+          </Typography>
+          
+          <Box
+            component="img"
+            src="/who_is_it_for.png"
+            alt="FigSprout Target Audiences"
+            sx={{
+              width: '100%',
+              maxWidth: '1200px',
+              height: 'auto',
+              margin: '0 auto',
+              display: 'block',
+              mb: 6,  // Add margin bottom for spacing
+            }}
+          />
+
+          {/* Target Audience Grid */}
+          <Grid 
+            container 
+            spacing={4}
+            sx={{ 
+              mt: 2,
+              justifyContent: 'center',
+            }}
+          >
+            {[
+              {
+                title: 'E-Commerce Sellers',
+                description: 'Increase Sales with Shopify Integration',
+                icon: '🛍️',
+              },
+              {
+                title: 'Product Pages',
+                description: 'Increase Sign Ups or Lead Generation',
+                icon: '📱',
+              },
+              {
+                title: 'Hospitality',
+                description: 'Increase hotel or travel bookings',
+                icon: '🏨',
+              },
+              {
+                title: 'Restaurant',
+                description: 'Increase Reservations or Food Orders',
+                icon: '🍽️',
+              },
+            ].map((audience, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Box
+                  sx={{
+                    backgroundColor: 'white',
+                    borderRadius: 3,
+                    p: 3,
+                    height: '100%',
+                    textAlign: 'center',
+                    boxShadow: '0 4px 20px rgba(106, 27, 155, 0.05)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 8px 30px rgba(106, 27, 155, 0.1)',
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography 
+                    variant="h2" 
+                    sx={{ 
+                      mb: 2,
+                      fontSize: '3rem',
+                    }}
+                  >
+                    {audience.icon}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 'bold',
+                      mb: 1,
+                      color: theme.primaryColor,
+                    }}
+                  >
+                    {audience.title}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: 'text.secondary',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {audience.description}
+                  </Typography>
                 </Box>
               </Grid>
             ))}
