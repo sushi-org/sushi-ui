@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../store/hooks';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { setUser } from '../../store/slices/userSlice';
+import { setDashboardData } from '../../store/slices/dashboardSlice';
+import { checkAuthStatus, getDashboardData } from '../../services/api';
 import Sidebar from './components/Sidebar';
 import TopBar from './components/TopBar';
 
@@ -20,15 +23,21 @@ const theme = {
 
 const Dashboard = () => {
   const dashboardData = useAppSelector(state => state.dashboard);
+  const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
   const drawerWidth = 280;
   const [showDestinationModal, setShowDestinationModal] = useState(false);
   const [initialPlatform, setInitialPlatform] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Extract the shop query parameter
+  const params = new URLSearchParams(location.search);
+  const shop = params.get('shop'); // Get the shop parameter
+
   useEffect(() => {
     // Check URL parameters for OAuth callback
-    const params = new URLSearchParams(location.search);
     const platform = params.get('platform');
     const status = params.get('status');
 
@@ -39,6 +48,38 @@ const Dashboard = () => {
       navigate('/dashboard/integrations', { replace: true });
     }
   }, [location, navigate]);
+
+  // Add a new useEffect to handle shop parameter and authentication
+  useEffect(() => {
+    // Only proceed if shop parameter exists
+    if (shop) {
+      const verifyAuth = async () => {
+        try {
+          // Call checkAuthStatus with the shop parameter
+          const userData = await checkAuthStatus(shop);
+          
+          if (userData) {
+            // Update user state with the returned data
+            dispatch(setUser(userData));
+            
+            // After successful authentication, fetch dashboard data
+            try {
+              const dashboardData = await getDashboardData();
+              if (dashboardData) {
+                dispatch(setDashboardData(dashboardData));
+              }
+            } catch (error) {
+              console.error('Failed to fetch dashboard data:', error);
+            }
+          }
+        } catch (error) {
+          console.error('Authentication verification failed:', error);
+        }
+      };
+      
+      verifyAuth();
+    }
+  }, [shop, dispatch]); // Dependencies: shop parameter and dispatch function
 
   return (
     <Box sx={{ display: 'flex' }}>
