@@ -25,69 +25,96 @@ const LoadingScreen = () => (
 );
 
 const AppContent = () => {
-  const [loading, setLoading] = useState(true);
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector(state => state.user);
-  
+  const user = useAppSelector(state => state.user);
+  const dashboardData = useAppSelector(state => state.dashboard);
+  const [isInitializing, setIsInitializing] = useState(true);
+
   useEffect(() => {
-    const checkAuth = async () => {
+    let mounted = true;
+
+    const initializeApp = async () => {
       try {
-        console.log("Checking auth status...");
-        const userData = await checkAuthStatus();
-        console.log("Auth check successful:", userData);
-        
-        dispatch(setUser(userData));
-        
-        try {
-          const dashboardData = await getDashboardData();
-          console.log("Dashboard data fetched:", dashboardData);
-          dispatch(setDashboardData(dashboardData));
-        } catch (dashboardError) {
-          console.error("Error fetching dashboard data:", dashboardError);
+        // Skip initialization if we already have both auth and dashboard data
+        if (user.isAuthenticated && dashboardData?.organization) {
+          setIsInitializing(false);
+          return;
+        }
+
+        // Check authentication if needed
+        if (!user.isAuthenticated) {
+          const userData = await checkAuthStatus();
+          if (!mounted) return;
+          
+          if (userData) {
+            dispatch(setUser(userData));
+          } else {
+            setIsInitializing(false);
+            return;
+          }
+        }
+
+        // Fetch dashboard data only if authenticated and don't have it yet
+        if (!dashboardData?.organization) {
+          const data = await getDashboardData();
+          if (!mounted) return;
+          
+          if (data) {
+            dispatch(setDashboardData(data));
+          }
         }
       } catch (error) {
-        console.log("Not authenticated:", error);
-        // User is not authenticated, that's okay
+        console.error('App initialization failed:', error);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setIsInitializing(false);
+        }
       }
     };
-    
-    checkAuth();
-  }, [dispatch]);
-  
-  if (loading) {
+
+    initializeApp();
+
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array since we handle all checks inside
+
+  if (isInitializing) {
     return <LoadingScreen />;
   }
-  
+
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route 
-        path="/dashboard/*" 
-        element={
-          isAuthenticated ? (
-            <Dashboard />
-          ) : (
-            <Navigate to="/" state={{ redirectedFrom: '/dashboard' }} replace />
-          )
-        } 
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/dashboard/*" element={
+        user.isAuthenticated ? <Dashboard /> : <Navigate to="/" replace />
+      } />
     </Routes>
   );
 };
 
-const App = () => {
+function App() {
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  
+  if (!clientId) {
+    console.error('Missing Google OAuth Client ID');
+    return (
+      <div style={{ padding: '20px', color: '#6A1B9B' }}>
+        <h1>Configuration Error</h1>
+        <p>Missing Google OAuth Client ID. Please check your environment variables.</p>
+      </div>
+    );
+  }
+
   return (
-    <Router>
-      <Provider store={store}>
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+    <Provider store={store}>
+      <Router>
+        <GoogleOAuthProvider clientId={clientId}>
           <AppContent />
         </GoogleOAuthProvider>
-      </Provider>
-    </Router>
+      </Router>
+    </Provider>
   );
-};
+}
 
 export default App;

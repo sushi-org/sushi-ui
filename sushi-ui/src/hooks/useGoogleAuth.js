@@ -14,37 +14,25 @@ const useGoogleAuth = () => {
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        console.log("Google login success, received token");
-        
-        if (!tokenResponse || !tokenResponse.access_token) {
-          throw new Error('No access token received from Google');
-        }
-        
+        console.log("Google login success, token response:", tokenResponse);
         const response = await loginWithGoogle(tokenResponse.access_token);
         
         if (response) {
-          console.log("Successfully logged in, setting user data");
           dispatch(setUser(response));
-          
           // Wait a brief moment to ensure cookie is set
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 100));
           
           // Then fetch dashboard data
           try {
-            console.log("Fetching dashboard data after login");
             const dashboardData = await getDashboardData();
             if (dashboardData?.organization) {
               dispatch(setDashboardData(dashboardData));
-              console.log("Dashboard data set, navigating to dashboard");
-            } else {
-              console.warn("Dashboard data missing organization info");
             }
-            navigate('/dashboard');
+            setTimeout(() => navigate('/dashboard'), 0);
           } catch (error) {
             console.error('Failed to fetch dashboard data after login:', error);
             // Still navigate to dashboard even if data fetch fails
-            console.log("Navigating to dashboard despite data fetch error");
-            navigate('/dashboard');
+            setTimeout(() => navigate('/dashboard'), 0);
           }
         }
       } catch (error) {
@@ -63,10 +51,8 @@ const useGoogleAuth = () => {
   return { 
     login: () => {
       try {
-        console.log("Initiating Google login flow");
         return login();
       } catch (error) {
-        console.error("Error starting Google login:", error);
         handleError(error);
         throw error;
       }
