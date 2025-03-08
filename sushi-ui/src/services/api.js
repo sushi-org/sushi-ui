@@ -9,7 +9,7 @@ export const commonOptions = {
   },
 };
 
-export const loginWithGoogle = async (accessToken) => {
+export const loginWithGoogle = async (accessToken, retry = true) => {
   try {
     console.log("Calling login API...");
     const response = await fetch(`${API_URL}/login`, {
@@ -35,6 +35,15 @@ export const loginWithGoogle = async (accessToken) => {
     return data;
   } catch (error) {
     console.error('Login error:', error);
+    
+    // If this is the first attempt and it failed, try again once
+    if (retry && error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      console.log('First login attempt failed, retrying...');
+      // Wait a moment before retrying
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return loginWithGoogle(accessToken, false);
+    }
+    
     throw error;
   }
 };
