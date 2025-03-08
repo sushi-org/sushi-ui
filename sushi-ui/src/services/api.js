@@ -76,13 +76,16 @@ export const getDashboardData = async () => {
   }
 };
 
-export const checkAuthStatus = async () => {
+export const checkAuthStatus = async (shop) => {
   try {
     console.log('Checking auth status with cookies...');
     // Log cookies before making request (for debugging)
     console.log("Document cookies before status request:", document.cookie);
-
-    const response = await fetch(`${API_URL}/auth/status`, {
+    
+    // Construct the API URL conditionally based on the presence of the shop parameter
+    const apiUrl = shop ? `${API_URL}/auth/status?shop=${shop}` : `${API_URL}/auth/status`;
+    
+    const response = await fetch(apiUrl, {
       ...commonOptions,
       method: 'GET',
     });
