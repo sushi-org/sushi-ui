@@ -1,25 +1,52 @@
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL || '';
 
 // Common headers and request options
 export const commonOptions = {
-  credentials: 'include',
+  // Comment out credentials for now
+  // credentials: 'include',
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
   },
 };
 
+// Add a helper function to ensure the API URL is valid
+const getFullApiUrl = (endpoint) => {
+  if (!API_URL) {
+    console.error('API_URL is not defined in environment variables');
+    return '';
+  }
+  
+  // Remove trailing slash from API_URL if it exists
+  const baseUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
+  // Add leading slash to endpoint if it doesn't exist
+  const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  
+  return `${baseUrl}${formattedEndpoint}`;
+};
+
 export const loginWithGoogle = async (accessToken) => {
   try {
-    console.log("Calling login API...");
-    const response = await fetch(`${API_URL}/login`, {
+    if (!accessToken) {
+      console.error('No access token provided for Google login');
+      throw new Error('Missing access token');
+    }
+    
+    console.log("Calling login API with token:", accessToken.substring(0, 10) + '...');
+    
+    const url = getFullApiUrl('login');
+    console.log("Login API URL:", url);
+    
+    const response = await fetch(url, {
       ...commonOptions,
       method: 'POST',
       body: JSON.stringify({ token: accessToken }),
+      // Comment out credentials for now
+      // credentials: 'include',
     });
 
-    console.log("Login response headers:", Object.fromEntries(response.headers));
     console.log("Login response status:", response.status);
+    console.log("Login response headers:", Object.fromEntries(response.headers));
 
     const data = await response.json();
     console.log("Login API Response:", data);
@@ -28,9 +55,6 @@ export const loginWithGoogle = async (accessToken) => {
       console.error("API Error:", data);
       throw data;
     }
-
-    // Log cookies after login (for debugging)
-    console.log("Document cookies after login:", document.cookie);
 
     return data;
   } catch (error) {
