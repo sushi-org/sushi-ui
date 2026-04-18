@@ -926,6 +926,7 @@ const LandingPage = () => {
           background: '#FFF',
           py: { xs: 8, md: 12 },
           position: 'relative',
+          overflow: 'visible',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -937,7 +938,7 @@ const LandingPage = () => {
           },
         }}
       >
-        <Container>
+        <Container sx={{ overflow: 'visible' }}>
           <Typography 
             variant="h4" 
             align="center" 
@@ -962,6 +963,9 @@ const LandingPage = () => {
               margin: '0 auto',
               display: 'block',
               mb: 6,  // Add margin bottom for spacing
+              objectFit: 'contain',
+              maxHeight: '80vh', // Ensure image doesn't exceed viewport height
+              overflow: 'visible',
             }}
           />
 
@@ -1070,6 +1074,7 @@ const LandingPage = () => {
           background: 'linear-gradient(180deg, #FFF 0%, #F8F5FB 100%)',
           py: { xs: 8, md: 12 },
           position: 'relative',
+          overflow: 'visible',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -1081,7 +1086,7 @@ const LandingPage = () => {
           },
         }}
       >
-        <Container>
+        <Container sx={{ overflow: 'visible' }}>
           <Typography 
             variant="h4" 
             align="center" 
@@ -1106,6 +1111,9 @@ const LandingPage = () => {
               margin: '0 auto',
               display: 'block',
               mb: 6,  // Add margin bottom for spacing
+              objectFit: 'contain',
+              maxHeight: '80vh', // Ensure image doesn't exceed viewport height
+              overflow: 'visible',
             }}
           />
 
